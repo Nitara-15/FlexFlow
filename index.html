@@ -16,10 +16,9 @@
 <header class="dark-top"><div class="brand"><span class="brand-mark">✦</span> FlexFlow</div></header>
 <div class="dark-content">
 <div id="hero-view">
-<div class="hero-dark"><div><div class="pill"><span class="pulse"></span> BUILT FOR INCOME THAT CHANGES</div><h1>Never Run Out of Cash <span>Between Gigs.</span></h1><p>Know how long your money can last, set a buffer for quiet weeks, and make each payout feel less random.</p><div class="hero-actions"><button class="btn btn-lime" id="hero-signup">Sign Up <span>↗</span></button><button class="btn btn-ghost" id="hero-login">Log In</button></div><p style="font-size:12px;margin-top:13px">Simple money tools. No finance lecture.</p></div>
+<div class="hero-dark"><div><div class="pill"><span class="pulse"></span> BUILT FOR INCOME THAT CHANGES</div><h1>Never Run Out of Cash <span>Between Gigs.</span></h1><p>Know how long your money can last, set a buffer for quiet weeks, and make each payout feel less random.</p><div class="hero-actions"><button type="button" class="btn btn-lime" id="hero-signup">Sign Up <span>↗</span></button><button type="button" class="btn btn-ghost" id="hero-login">Log In</button></div><p style="font-size:12px;margin-top:13px">Simple money tools. No finance lecture.</p></div>
 <div class="hero-visual"><div class="visual-orbit"><div class="visual-core">✦</div></div><div class="float-chip chip-a">⏳ Runway <b>in view</b></div><div class="float-chip chip-b">🛟 Buffer <b>growing</b></div></div></div>
 <div class="feature-grid"><article class="feature"><div class="feature-icon">⏳</div><h3>Time-to-Broke Clock</h3><p>Estimate how long your available money may last.</p></article><article class="feature"><div class="feature-icon">🛟</div><h3>Drought Buffer Vaults</h3><p>Plan a cushion for weeks when gigs go quiet.</p></article><article class="feature"><div class="feature-icon">🎚️</div><h3>Safe Spend Limits</h3><p>See a spending amount after essentials and goals.</p></article><article class="feature"><div class="feature-icon">🧾</div><h3>Client Risk Rating</h3><p>Track payment history and warning signs yourself.</p></article></div>
-<div class="entry-panel"><button class="btn btn-ghost" id="entry-login">Log In <span>↗</span></button><button class="btn btn-lime" id="entry-signup">Sign Up <span>✦</span></button><div class="entry-caption"><strong>Already have an account?</strong> Choose Log In to preview the same quick setup.</div></div>
 <div class="dark-footer">Your money details stay in this browser demo. No bank or payment connections are made.</div>
 </div>
 <div id="onboarding-view" class="steps-wrap hidden">
@@ -107,7 +106,7 @@ const prefersReduced=window.matchMedia&&window.matchMedia("(prefers-reduced-moti
 if(prefersReduced){enterHero();}else{window.setTimeout(enterHero,2500);}
 
 function startOnboarding(mode){onboarding.mode=mode;step=1;$("hero-view").classList.add("hidden");$("onboarding-view").classList.remove("hidden");renderStep();}
-["hero-signup","hero-login","entry-login","entry-signup"].forEach(id=>$(id).addEventListener("click",()=>startOnboarding(id.includes("login")?"login":"signup")));
+window.flexflowStartOnboarding=startOnboarding;
 $("exit-onboarding").addEventListener("click",()=>{$("onboarding-view").classList.add("hidden");$("hero-view").classList.remove("hidden");});
 function renderStep(){const titles=["What describes your income best?","What is your main financial goal?","Connect your money handle"];const desc=["No labels needed. Pick the one that feels closest.","Choose what would make money feel less stressful.","You can preview the idea without sharing real account details."];$("step-count").textContent="STEP "+step+" OF 3";$("step-title").textContent=titles[step-1];$("step-description").textContent=desc[step-1];document.querySelectorAll(".step-bars span").forEach((s,i)=>s.classList.toggle("on",i<step));$("step-back").disabled=step===1;$("step-back").style.opacity=step===1?".35":"1";$("step-next").textContent=step===3?"Enter FlexFlow ↗":"Continue →";let body="";
 if(step===1){const choices=[["Freelancer / Gig Worker","Income changes with projects"],["Student with Allowance","Allowance or pocket money"],["Small Business / Creator","Sales, content, or side hustle"],["Salaried","Regular pay cheque"]];body='<div class="choice-grid">'+choices.map(([t,d])=>'<button class="choice '+(onboarding.income===t?'selected':'')+'" data-income="'+t+'">'+t+'<small>'+d+'</small></button>').join("")+'</div><label for="other-income" style="font-size:12px;color:#bdc6bd">Another option? (optional)</label><input id="other-income" class="text-input" maxlength="70" placeholder="Tell us in a few words" value="'+safe(onboarding.other)+'">';}
@@ -157,6 +156,18 @@ function addBubble(text,user){const b=document.createElement("div");b.className=
 function sendChat(text){const q=(text||$("chat-input").value).trim();if(!q)return;addBubble(q,true);$("chat-input").value="";setTimeout(()=>addBubble(answerFor(q),false),180);}
 $("chat-fab").addEventListener("click",()=>$("chat-panel").classList.toggle("hidden"));$("chat-close").addEventListener("click",()=>$("chat-panel").classList.add("hidden"));$("chat-send").addEventListener("click",()=>sendChat());$("chat-input").addEventListener("keydown",e=>{if(e.key==="Enter")sendChat();});document.querySelectorAll("[data-suggest]").forEach(b=>b.addEventListener("click",()=>sendChat(b.dataset.suggest)));
 renderStats();updateAllocation();calcRunway();calcVault();calcSIP();calcEMI();
+})();
+</script>
+<script>
+(function(){
+  document.addEventListener("click",function(event){
+    var button=event.target.closest("#hero-signup, #hero-login");
+    if(!button)return;
+    event.preventDefault();
+    if(typeof window.flexflowStartOnboarding==="function"){
+      window.flexflowStartOnboarding(button.id==="hero-login"?"login":"signup");
+    }
+  });
 })();
 </script>
 </body>
