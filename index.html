@@ -104,6 +104,13 @@
 .quiz-options button{background:#111827;color:#F9FAFB;border:1px solid #374151;border-radius:12px;padding:12px;text-align:left}
 .quiz-options button:hover{border-color:#B7FF3C}
 .quiz-feedback{margin-top:12px;padding:12px;border-radius:12px;background:#B7FF3C14;border:1px solid #B7FF3C35;color:#E8FFC0}
+/* Smart Allocation summary contrast + onboarding skip */
+#allocation-total,#allocation-total *{color:#111827!important}
+#allocation-total{background:#f9fafb!important;border:1px solid #d1d5db}
+#allocation-total strong{font-weight:800}
+#allocation-total .allocation-item,#allocation-total .allocation-item *{color:#111827!important}
+.skip-onboarding{border:0;background:transparent;color:#9CA3AF;font-size:13px;font-weight:650;padding:8px 10px;border-radius:10px;cursor:pointer;text-decoration:none}
+.skip-onboarding:hover,.skip-onboarding:focus-visible{color:#B7FF3C;background:#B7FF3C12;outline:2px solid #B7FF3C55;outline-offset:2px}
 </style>
 </head>
 <body>
@@ -119,7 +126,7 @@
 <div class="dark-footer">Your money details stay in this browser demo. No bank or payment connections are made.</div>
 </div>
 <div id="onboarding-view" class="steps-wrap hidden">
-<div class="steps-head"><div><div class="section-label">YOUR FLOW STARTS HERE</div><div class="step-bars"><span class="on"></span><span></span><span></span></div></div><button class="top-link" id="exit-onboarding">← Back</button></div>
+<div class="steps-head"><div><div class="section-label">YOUR FLOW STARTS HERE</div><div class="step-bars"><span class="on"></span><span></span><span></span></div></div><div style="display:flex;align-items:center;gap:8px"><button type="button" class="skip-onboarding" id="skip-onboarding">Skip for now ➔</button><button class="top-link" id="exit-onboarding">← Back</button></div></div>
 <div class="question-card" id="step-card">
 <div class="step-count" id="step-count">STEP 1 OF 3</div><h1 id="step-title">What describes your income best?</h1><p id="step-description">No labels needed. Pick the one that feels closest.</p>
 <div id="step-body"></div>
@@ -204,6 +211,13 @@ if(prefersReduced){enterHero();}else{window.setTimeout(enterHero,2500);}
 function startOnboarding(mode){onboarding.mode=mode;step=1;$("hero-view").classList.add("hidden");$("onboarding-view").classList.remove("hidden");renderStep();}
 window.flexflowStartOnboarding=startOnboarding;
 $("exit-onboarding").addEventListener("click",()=>{$("onboarding-view").classList.add("hidden");$("hero-view").classList.remove("hidden");});
+function skipOnboarding(){
+onboarding={...onboarding,fullName:"Demo User",email:"",password:"",income:"Freelance / Gig Worker",incomeCustom:"",monthlyIncome:"5000-10000",expenses:"3000",goal:"Build an emergency buffer",goalCustom:"",alerts:true,reminders:true};
+try{localStorage.setItem("flexflow-profile",JSON.stringify({fullName:"Demo User",income:onboarding.income,monthlyIncome:onboarding.monthlyIncome,expenses:onboarding.expenses,goal:onboarding.goal,alerts:true,reminders:true,demo:true}));}catch(e){}
+$("runway-cash").value=Math.round(getMonthlyIncomeEstimate());$("runway-daily").value=Math.max(1,Math.round(Number(onboarding.expenses)/30));
+$("prelogin").classList.add("hidden");$("app-shell").classList.remove("hidden");$("mobile-nav").classList.remove("hidden");$("chat-fab").classList.remove("hidden");$("profile-pill").textContent="Demo User · Demo";showPage("home");renderStats();updateAllocation();renderPersonalizedSplit();calcVault();calcRunway();
+}
+$("skip-onboarding").addEventListener("click",skipOnboarding);
 function renderStep(){
 const titles=["Create your FlexFlow profile","Where does your income come from?","Income and monthly expenses","What are you working toward?","Make your experience yours"];
 const desc=["Use a demo profile to personalise your dashboard. Passwords are not saved by this prototype.","Choose the closest source or enter your own.","Ranges and estimates are enough; you can adjust them later.","Choose a goal or write a specific one.","Optional reminders help the demo feel more relevant."];
